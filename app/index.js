@@ -6,6 +6,7 @@ import RoundButton from '../components/RoundButton';
 import { useRouter } from 'expo-router';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebaseConfig';
+import GameRecord from '../components/GameRecord';
 
 
 export default function App() {
@@ -55,6 +56,7 @@ export default function App() {
                         <Text style={styles.attribute}>11</Text>
                     </View>
                 </View>
+                <GameRecord />
                 <StatusBar style="auto" />
             </SafeAreaView>
         </LinearGradient>
