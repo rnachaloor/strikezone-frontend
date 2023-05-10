@@ -34,11 +34,14 @@ export default function App() {
 
     return (
         <LinearGradient
-            colors={['#c27b9f', '#3c79d7']}
+            colors={['#3c79d7', '#c27b9f']}
             start={{x: 0, y: 0}}
-            end={{x: 0, y: 1}}
+            end={{x: 0, y: 1.5}}
             style={styles.container}>
             <Text style={styles.titleText}>STRIKEZONE</Text>
+            <RoundButton text="Capture"/>
+            <RoundButton text="My Games"/>
+            <RoundButton text="My Stats"/>
             <SafeAreaView style={styles.homepageStatsContainer}>
                 <View style={styles.attributeContainer}>
                     <View style={styles.attributeRow}>
@@ -54,14 +57,14 @@ export default function App() {
                 </View>
                 <View style={styles.attributeContainer}>
                     <View style={styles.attributeRow}>
-                        <Text style={styles.attributeTitle}>GAMES PLAYED</Text>
-                        <Text style={styles.attribute}>11</Text>
+                        <Text style={styles.attributeTitle}>AVERAGE SCORE</Text>
+                        <Text style={styles.attribute}>132</Text>
                     </View>
                 </View>
                 <View style={styles.attributeContainer}>
                     <View style={styles.attributeRow}>
-                        <Text style={styles.attributeTitle}>GAMES PLAYED</Text>
-                        <Text style={styles.attribute}>11</Text>
+                        <Text style={styles.attributeTitle}>MEDIAN SCORE</Text>
+                        <Text style={styles.attribute}>125</Text>
                     </View>
                 </View>
                 {/* <GameRecord /> */}
@@ -78,20 +81,24 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'flex-end',
+
     },
     titleText: {
         fontFamily: 'Montserrat_600SemiBold', 
+        fontWeight:700,
         fontSize: 40,
-        paddingBottom: 100,
+        padding: 10,
         color: 'white',
         alignSelf: "center"
     },
     homepageStatsContainer: {
         width: width * 0.8,
+        marginTop: 80,
+        marginBottom: 120,
         flexDirection: 'row',
         flexWrap: 'wrap',
-        alignItems:'flex-start'
+        alignItems:'flex-start',
     },
     attributeTitle: {
         fontFamily: 'Lexend_400Regular', 
@@ -100,7 +107,6 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     attribute: {
-        fontFamily: 'Montserrat_600SemiBold', 
         fontSize: 30,
         alignSelf: 'auto',
         color: 'white',
@@ -108,7 +114,8 @@ const styles = StyleSheet.create({
     attributeContainer: {
         justifyContent: 'space-between',
         margin: 10,
-        marginRight: 40,
+        width: width * 0.30,
+        marginRight: 30,
     },
     
 });
