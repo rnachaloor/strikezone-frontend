@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, SafeAreaView, View } from 'react-native';
-import { useFonts, Montserrat_600SemiBold } from "@expo-google-fonts/montserrat";
+import { StyleSheet, Text, SafeAreaView, View, Dimensions } from 'react-native';
+import { useFonts, Montserrat_600SemiBold, Montserrat_400Regular, Montserrat_500Medium } from "@expo-google-fonts/montserrat";
+import { Lexend_400Regular, Lexend_500Medium } from '@expo-google-fonts/lexend';
 import { LinearGradient } from "expo-linear-gradient";
 import RoundButton from '../components/RoundButton';
 import { useRouter } from 'expo-router';
@@ -12,8 +13,11 @@ import GameRecord from '../components/GameRecord';
 export default function App() {
 
     let [fontsLoaded] = useFonts({
-        Montserrat_600SemiBold,
+        Montserrat_400Regular,
+        Montserrat_500Medium,
+        Lexend_400Regular
     })
+
     const router = useRouter()
 
     //no hooks beyond here
@@ -30,38 +34,44 @@ export default function App() {
 
     return (
         <LinearGradient
-            colors={['#3483eb', '#df34eb']}
+            colors={['#c27b9f', '#3c79d7']}
             start={{x: 0, y: 0}}
             end={{x: 0, y: 1}}
             style={styles.container}>
-            <SafeAreaView>
-                <Text style={styles.titleText}>STRIKEZONE</Text>
+            <Text style={styles.titleText}>STRIKEZONE</Text>
+            <SafeAreaView style={styles.homepageStatsContainer}>
                 <View style={styles.attributeContainer}>
                     <View style={styles.attributeRow}>
-                        <Text style={styles.attributeTitle}>Games Played</Text>
+                        <Text style={styles.attributeTitle}>GAMES PLAYED</Text>
                         <Text style={styles.attribute}>11</Text>
                     </View>
+                </View>
+                <View style={styles.attributeContainer}>
                     <View>
-                        <Text style={styles.attributeTitle}>High Score</Text>
+                        <Text style={styles.attributeTitle}>HIGH SCORE</Text>
                         <Text style={styles.attribute}>186</Text>
                     </View>
                 </View>
                 <View style={styles.attributeContainer}>
-                    <View>
-                        <Text style={styles.attributeTitle}>Game Average</Text>
-                        <Text style={styles.attribute}>11</Text>
-                    </View>
-                    <View>
-                        <Text style={styles.attributeTitle}>Game Median</Text>
+                    <View style={styles.attributeRow}>
+                        <Text style={styles.attributeTitle}>GAMES PLAYED</Text>
                         <Text style={styles.attribute}>11</Text>
                     </View>
                 </View>
-                <GameRecord />
+                <View style={styles.attributeContainer}>
+                    <View style={styles.attributeRow}>
+                        <Text style={styles.attributeTitle}>GAMES PLAYED</Text>
+                        <Text style={styles.attribute}>11</Text>
+                    </View>
+                </View>
+                {/* <GameRecord /> */}
                 <StatusBar style="auto" />
             </SafeAreaView>
         </LinearGradient>
     );
 }
+
+const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
     container: {
@@ -77,21 +87,28 @@ const styles = StyleSheet.create({
         color: 'white',
         alignSelf: "center"
     },
+    homepageStatsContainer: {
+        width: width * 0.8,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        alignItems:'flex-start'
+    },
     attributeTitle: {
-        fontFamily: 'Montserrat_600SemiBold', 
-        fontSize: 20,
+        fontFamily: 'Lexend_400Regular', 
+        fontSize: 13,
         paddingRight: 15,
         color: 'white'
     },
     attribute: {
         fontFamily: 'Montserrat_600SemiBold', 
-        fontSize: 40,
-        alignSelf: 'center',
-        color: 'white'
+        fontSize: 30,
+        alignSelf: 'auto',
+        color: 'white',
     },
     attributeContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        margin: 10,
+        marginRight: 40,
     },
     
 });
