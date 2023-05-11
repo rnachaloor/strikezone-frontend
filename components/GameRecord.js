@@ -45,7 +45,9 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         paddingHorizontal: 15,
         paddingVertical: 10,
-        width: width * 0.9
+        width: width * 0.9,
+        marginTop: 0,
+        marginBottom: 6
     },
     attributeTitle: {
         fontFamily: 'Lexend_400Regular', 

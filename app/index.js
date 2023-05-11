@@ -40,9 +40,9 @@ export default function App() {
             end={{x: 0, y: 1.5}}
             style={styles.container}>
             <Text style={styles.titleText}>STRIKEZONE</Text>
-            <RoundButton text="Capture" onPress={() => router.push('/capture')}/>
-            <RoundButton text="My Games" onPress={() => router.push('/your-games')}/>
-            <RoundButton text="My Stats"/>
+            <RoundButton color='transparent' textColor='white' fontSize={20} text="Capture" onPress={() => router.push('/capture')}/>
+            <RoundButton color='transparent' textColor='white' fontSize={20} text="My Games" onPress={() => router.push('/your-games')}/>
+            <RoundButton color='transparent' textColor='white' fontSize={20} text="My Stats"/>
             <SafeAreaView style={styles.homepageStatsContainer}>
                 <View style={styles.attributeContainer}>
                     <View style={styles.attributeRow}>
@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
     },
     titleText: {
         fontFamily: 'Montserrat_600SemiBold', 
+        marginBottom:10,
         fontWeight:700,
         fontSize: 40,
         padding: 10,
