@@ -7,7 +7,25 @@ import RoundButton from '../components/RoundButton';
 import { useRouter } from 'expo-router';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebaseConfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import GameRecord from '../components/GameRecord';
+
+/*
+Storage object should look like this
+storage = {
+    games = [
+        {
+            deviceId: 'whatever' 
+            finalScore: 208
+            symbols_list: ['44', '9-', '7-', 'X', 'X', '9/', '9-', '7/', '9/', '1/8']
+            date: '05/11/2023'       
+        },
+        {
+
+        }
+    ]
+}
+*/
 
 
 export default function App() {

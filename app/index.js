@@ -7,10 +7,13 @@ import RoundButton from '../components/RoundButton';
 import { useRouter } from 'expo-router';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebaseConfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import GameRecord from '../components/GameRecord';
 
 
 export default function App() {
+
+    const router = useRouter()
 
     let [fontsLoaded] = useFonts({
         Montserrat_400Regular,
@@ -18,20 +21,18 @@ export default function App() {
         Lexend_400Regular,
         Montserrat_600SemiBold
     })
-
-    const router = useRouter()
-
+      
     //no hooks beyond here
 
     if (!fontsLoaded) {
         return null;
     }
 
-    const handleSignOut = () => {
-        signOut(auth).then(() => {
-            router.push("/")
-        }).catch(error => alert(error.message))
-    }
+    // const handleSignOut = () => {
+    //     signOut(auth).then(() => {
+    //         router.push("/")
+    //     }).catch(error => alert(error.message))
+    // 
 
     return (
         <LinearGradient

@@ -22,9 +22,15 @@ export default function App() {
         )
     }
 
+    let backToMenuText = "< Main Menu"
+
     return (
         <View style={styles.container}>
             <Camera style={{flex: 1}} type={type}>
+                <Text style={styles.backButton} onPress={() => router.push('/')}>{backToMenuText}</Text>
+                <View style={styles.scorecardRectangle}>
+
+                </View>
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity style={styles.button}>
                         <Text style={styles.text}>Capture</Text>
@@ -41,11 +47,24 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center'
     },
+    scorecardRectangle: {
+        marginTop:310,
+        borderColor:'white',
+        borderWidth: 1,
+        height:70,
+        width: 390,
+        alignSelf:'center'
+    },
     buttonContainer: {
         flex: 1, 
         flexDirection: 'row',
         backgroundColor: 'transparent',
         margin: 64
+    },
+    backButton: {
+        paddingLeft: 10,
+        marginTop: 50,
+        color: 'white'
     },
     button: {
         flex: 1,
