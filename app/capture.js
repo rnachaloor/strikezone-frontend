@@ -25,7 +25,11 @@ export default function App() {
     return (
         <View style={styles.container}>
             <Camera style={{flex: 1}} type={type}>
-                
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity style={styles.button}>
+                        <Text style={styles.text}>Capture</Text>
+                    </TouchableOpacity>
+                </View>
             </Camera>
         </View>
     )
@@ -36,5 +40,21 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center'
+    },
+    buttonContainer: {
+        flex: 1, 
+        flexDirection: 'row',
+        backgroundColor: 'transparent',
+        margin: 64
+    },
+    button: {
+        flex: 1,
+        alignSelf: 'flex-end',
+        alignItems: 'center'
+    },
+    text: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: 'white'
     }
 })

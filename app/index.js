@@ -40,8 +40,8 @@ export default function App() {
             end={{x: 0, y: 1.5}}
             style={styles.container}>
             <Text style={styles.titleText}>STRIKEZONE</Text>
-            <RoundButton text="Capture"/>
-            <RoundButton text="My Games"/>
+            <RoundButton text="Capture" onPress={() => router.push('/capture')}/>
+            <RoundButton text="My Games" onPress={() => router.push('/your-games')}/>
             <RoundButton text="My Stats"/>
             <SafeAreaView style={styles.homepageStatsContainer}>
                 <View style={styles.attributeContainer}>
