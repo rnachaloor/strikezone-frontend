@@ -15,7 +15,8 @@ export default function App() {
     let [fontsLoaded] = useFonts({
         Montserrat_400Regular,
         Montserrat_500Medium,
-        Lexend_400Regular
+        Lexend_400Regular,
+        Montserrat_600SemiBold
     })
 
     const router = useRouter()
