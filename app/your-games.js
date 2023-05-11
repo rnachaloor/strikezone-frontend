@@ -27,7 +27,7 @@ export default function App() {
             <ScrollView style={styles.gameViewContainer}>
                 <Text style={styles.titleText}>Your Games</Text>
                 <TouchableOpacity>
-                    <Text style={styles.backButton} onPress={() => router.push('/index')}>{backToMenuText}</Text>
+                    <Text style={styles.backButton} onPress={() => router.push('/')}>{backToMenuText}</Text>
                 </TouchableOpacity>
                 <Text style={styles.dateText}>May 12, 2023</Text>
                 <GameRecord/>
