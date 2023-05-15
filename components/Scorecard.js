@@ -1,7 +1,10 @@
 import { StyleSheet, TouchableOpacity, Text, View, TouchableHighlight } from 'react-native';
 import { useFonts, Montserrat_400Regular } from "@expo-google-fonts/montserrat";
+import { useState, useRef } from 'react';
+import FrameUpper from '../components/FrameUpper';
+import FrameLower from '../components/FrameLower';
 
-export default function Scorecard () {
+export default function Scorecard ({ symbols, scores }) {
 
     let [fontsLoaded] = useFonts({
         Montserrat_400Regular,
@@ -13,7 +16,8 @@ export default function Scorecard () {
 
     const styles = StyleSheet.create({
         container: {
-            marginTop: 10,
+            marginTop: 20,
+            marginBottom: 20,
             width: 350,
             flexDirection: 'row',
             flexWrap: 'wrap'
@@ -21,13 +25,6 @@ export default function Scorecard () {
         frameHeader: {
             width: 35,
             height:20,
-        },
-        frameUpper: {
-            width: 35,
-            height:30,
-            borderColor: 'black',
-            alignItems:'center',
-            justifyContent: 'center'
         },
         frameLower: {
             width: 35,
@@ -70,66 +67,14 @@ export default function Scorecard () {
             <View style={styles.frameHeader}>
                 <Text style={{  alignSelf: 'center' }}>10</Text>
             </View>
-            <TouchableOpacity style={styles.frameUpper}>
-                <Text>X</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.frameUpper}>
-                <Text>9 -</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.frameUpper}>
-                <Text>6 /</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.frameUpper}>
-                <Text>X</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.frameUpper}>
-                <Text>9 /</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.frameUpper}>
-                <Text>7 /</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.frameUpper}>
-                <Text>8 /</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.frameUpper}>
-                <Text>6 3</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.frameUpper}>
-                <Text>8 1</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.frameUpper}>
-                <Text>X8/</Text>
-            </TouchableOpacity>
-            <View style={styles.frameLower}>
-                <Text>19</Text>
-            </View>
-            <View style={styles.frameLower}>
-                <Text>28</Text>
-            </View>
-            <View style={styles.frameLower}>
-                <Text>48</Text>
-            </View>
-            <View style={styles.frameLower}>
-                <Text>68</Text>
-            </View>
-            <View style={styles.frameLower}>
-                <Text>85</Text>
-            </View>
-            <View style={styles.frameLower}>
-                <Text>103</Text>
-            </View>
-            <View style={styles.frameLower}>
-                <Text>119</Text>
-            </View>
-            <View style={styles.frameLower}>
-                <Text>128</Text>
-            </View>
-            <View style={styles.frameLower}>
-                <Text>137</Text>
-            </View>
-            <View style={styles.frameLower}>
-                <Text>157</Text>
-            </View>
+
+            {symbols.map((item, index) => (
+                <FrameUpper key={index} symbol={item}/>
+            ))}
+
+            {scores.map((item, index) => (
+                <FrameLower key={index} score={item}/>
+            ))}
         </View>
     )
 }
