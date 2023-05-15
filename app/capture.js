@@ -57,7 +57,7 @@ export default function App() {
         });
     
         try {
-          const response = await fetch('https://strikezone-backend-app-e32wvb46ka-uc.a.run.app/captures/post-image', {
+          const response = await fetch('http://192.168.1.212:8080/captures/post-image', {
             method: 'POST',
             body: formData
           });
@@ -71,11 +71,13 @@ export default function App() {
 
     // React freaks out when the '<' symbol is inside an element, so this is to make sure that doesn't happen
     let backToMenuText = "< Main Menu"
+    let toManualScoresText = "Enter score manually >"
 
     return (
         <SafeAreaView style={styles.container}>
             <Camera style={{flex: 1}} type={type} ref={cameraRef}>
                     <Text style={styles.backButton} onPress={() => router.push('/')}>{backToMenuText}</Text>
+                    <Text style={styles.enterScoreManually} onPress={() => router.push('/enter-score')}>{toManualScoresText}</Text>
                     <View style={styles.scorecardRectangle}/>
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity style={styles.button} onPress={handleTakePicture}>
@@ -110,6 +112,10 @@ const styles = StyleSheet.create({
     backButton: {
         paddingLeft: 10,
         marginTop: 50,
+        color: 'white'
+    },
+    enterScoreManually: {
+        paddingLeft: 10,
         color: 'white'
     },
     button: {
