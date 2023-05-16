@@ -1,7 +1,17 @@
 import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 import { useFonts, Montserrat_400Regular } from "@expo-google-fonts/montserrat";
 
-export default function RoundButton({ onPress, text, width = 265, height = 50, color = 'white', textColor = 'black', fontSize=14}) {
+export default function RoundButton({ onPress, 
+    text, 
+    width = 265, 
+    height = 50, 
+    color = 'white', 
+    textColor = 'black', 
+    fontSize=14, 
+    margin=0, 
+    borderRadius=30,
+    shadowOpacity=0
+}) {
     
     let [fontsLoaded] = useFonts({
         Montserrat_400Regular,
@@ -15,10 +25,16 @@ export default function RoundButton({ onPress, text, width = 265, height = 50, c
         container: {
             width: width,
             height: height,
+            margin: margin,
             backgroundColor: color,
-            borderRadius: 30,
+            borderRadius: borderRadius,
             justifyContent: 'center',
             alignItems: 'center',
+
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: shadowOpacity,
+            shadowRadius: 2,
         },
         textStyle: {
             fontFamily: 'Montserrat_400Regular',

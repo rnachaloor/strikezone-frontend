@@ -15,9 +15,11 @@ import Scorecard from '../components/Scorecard';
 
 export default function App() {
 
-    const [symbols, setSymbols] = useState(null);
-    const [scores, setScores] = useState(null);
+    const [symbols, setSymbols] = useState(['', '', '', '', '', '', '', '', '', '']);
+    const [scores, setScores] = useState([]);
     const [frameInputBorderColor, setFrameInputBorderColor] = useState('black');
+    const [frameToEdit, setFrameToEdit] = useState(1);
+    const [frameSymbol, setFrameSymbol] = useState(null);
 
     let [fontsLoaded] = useFonts({
         Montserrat_400Regular,
@@ -27,11 +29,74 @@ export default function App() {
     let backToMenuText = "< Capture"
     const router = useRouter()
 
+    // List of functions to handle a number key press
+    const handle0key = () => {
+        handleScorecardChange(0)
+    }
+
+    const handle1key = () => {
+        handleScorecardChange(1)
+    }
+
+    const handle2key = () => {
+        handleScorecardChange(2)
+    }
+
+    const handle3key = () => {
+        handleScorecardChange(3)
+    }
+
+    const handle4key = () => {
+        handleScorecardChange(4)
+    }
+
+    const handle5key = () => {
+        handleScorecardChange(5)
+    }
+
+    const handle6key = () => {
+        handleScorecardChange(6)
+    }
+
+    const handle7key = () => {
+        handleScorecardChange(7)
+    }
+
+    const handle8key = () => {
+        handleScorecardChange(8)
+    }
+
+    const handle9key = () => {
+        handleScorecardChange(9)
+    }
+
+    const handle10key = () => {
+        handleScorecardChange(10)
+    }
+
+    // Handle when the frame number input is changed
     const handleFrameInputChange = (value) => {
-        if (value < 1 || value > 10) {
+        setFrameToEdit(value)
+    }
+
+    // Handles when the enter button is pressed
+    const handleScorecardChange = (pins) => {
+
+        // If the frame to edit is not in [1, 10], indicate to the user there's an error
+        if (frameToEdit < 1 || frameToEdit > 10) {
             setFrameInputBorderColor('red')
+        
+        // Otherwise, go through with the operation
         } else {
             setFrameInputBorderColor('black')
+            
+            // Access
+
+            // Increment the frame to edit at the end so the user doesn't have to
+            if (frameToEdit < 10) {
+                let nextFrame = parseInt(frameToEdit) + 1
+                setFrameToEdit(nextFrame)
+            }
         }
     }
 
@@ -49,8 +114,8 @@ export default function App() {
                 </TouchableOpacity>
                 <View style={styles.enterScoresView}>
                     <Scorecard
-                        symbols={["X", "X", "X", "X", "X", "X", "X", "X", "X", "XXX"]}
-                        scores={["30", "60", "90", "120", "150", "180", "210", "240", "270", "300"]}
+                        symbols={symbols}
+                        scores={scores}
                     />
 
                     <View style={styles.enterScoresController}>
@@ -61,16 +126,24 @@ export default function App() {
                                 style={[styles.frameInput, { borderColor: frameInputBorderColor }]}
                                 onChangeText={handleFrameInputChange}
                                 keyboardType="numeric"
-                            />
+                            >{frameToEdit}</TextInput>
 
                         </View>
-                        <View style={styles.enterScoresControllerRight}>
-                            <Text style={styles.controlLabel}>Frame Symbols</Text>
+                    </View>
 
-                            <TextInput
-                                style={styles.frameInput}
-                            />
-                        </View>
+                    <Text style={styles.controlLabel}>Pins Knocked Down</Text>
+                    <View style={styles.enterScoresControllerButtons}>
+                        <RoundButton onPress={handle0key} text="0" borderRadius={0} width={60} margin={5} shadowOpacity={0.4}></RoundButton>
+                        <RoundButton onPress={handle1key} text="1" borderRadius={0} width={60} margin={5} shadowOpacity={0.4}></RoundButton>
+                        <RoundButton onPress={handle2key} text="2" borderRadius={0} width={60} margin={5} shadowOpacity={0.4}></RoundButton>
+                        <RoundButton onPress={handle3key} text="3" borderRadius={0} width={60} margin={5} shadowOpacity={0.4}></RoundButton>
+                        <RoundButton onPress={handle4key} text="4" borderRadius={0} width={60} margin={5} shadowOpacity={0.4}></RoundButton>
+                        <RoundButton onPress={handle5key} text="5" borderRadius={0} width={60} margin={5} shadowOpacity={0.4}></RoundButton>
+                        <RoundButton onPress={handle6key} text="6" borderRadius={0} width={60} margin={5} shadowOpacity={0.4}></RoundButton>
+                        <RoundButton onPress={handle7key} text="7" borderRadius={0} width={60} margin={5} shadowOpacity={0.4}></RoundButton>
+                        <RoundButton onPress={handle8key} text="8" borderRadius={0} width={60} margin={5} shadowOpacity={0.4}></RoundButton>
+                        <RoundButton onPress={handle9key} text="9" borderRadius={0} width={60} margin={5} shadowOpacity={0.4}></RoundButton>
+                        <RoundButton onPress={handle10key} text="10" borderRadius={0} width={60} margin={5} shadowOpacity={0.4}></RoundButton>
                     </View>
                 </View>
             </View>
@@ -113,7 +186,7 @@ const styles = StyleSheet.create({
         flexDirection:'row'
     },
     enterScoresControllerLeft: {
-        width: 180,
+        width: 360,
         height: 100,
     },
     frameInput: {
@@ -125,9 +198,12 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 20
     },
-    enterScoresControllerRight: {
-        width: 180,
-        height: 100,
+    enterScoresControllerButtons: {
+        width: 360,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection:'row',
+        flexWrap: 'wrap',
     },
     controlLabel: {
         color: 'gray',
