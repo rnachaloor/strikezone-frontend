@@ -15,11 +15,11 @@ import Scorecard from '../components/Scorecard';
 
 export default function App() {
 
-    const [symbols, setSymbols] = useState(['', '', '', '', '', '', '', '', '', '']);
+    const [symbols, setSymbols] = useState(['X', '9-', '8/', 'X', 'X', '9/', '7-', 'X', '9/', '6/9']);
     const [scores, setScores] = useState([]);
     const [frameInputBorderColor, setFrameInputBorderColor] = useState('black');
     const [frameToEdit, setFrameToEdit] = useState(1);
-    const [frameSymbol, setFrameSymbol] = useState(null);
+    const [frameSymbol, setFrameSymbol] = useState(symbols[frameToEdit - 1]);
 
     let [fontsLoaded] = useFonts({
         Montserrat_400Regular,
@@ -74,6 +74,10 @@ export default function App() {
         handleScorecardChange(10)
     }
 
+    const handleClear = () => {
+        handleScorecardChange(0)
+    }
+
     // Handle when the frame number input is changed
     const handleFrameInputChange = (value) => {
         setFrameToEdit(value)
@@ -82,23 +86,28 @@ export default function App() {
     // Handles when the enter button is pressed
     const handleScorecardChange = (pins) => {
 
-        // If the frame to edit is not in [1, 10], indicate to the user there's an error
-        if (frameToEdit < 1 || frameToEdit > 10) {
-            setFrameInputBorderColor('red')
-        
-        // Otherwise, go through with the operation
-        } else {
-            setFrameInputBorderColor('black')
-            
-            // Access
+        setFrameSymbol(symbols[frameToEdit - 1])
 
-            // Increment the frame to edit at the end so the user doesn't have to
-            if (frameToEdit < 10) {
-                let nextFrame = parseInt(frameToEdit) + 1
-                setFrameToEdit(nextFrame)
-            }
+        if (pins === 10) {
+            let currentSymbolsList = symbols
+            currentSymbolsList[frameToEdit - 1] = "X"
+            setSymbols(currentSymbolsList)
+            setFrameToEdit(frameToEdit + 1)
+        } else {
+            console.log("Pins is not 10, it is " + pins)
+
+            setFrameSymbol("" + pins)
+
+            // let currentSymbolsList = symbols
+            // let frameString = currentSymbolsList[frameToEdit - 1]
+            // frameString = "" + pins
+            // currentSymbolsList[frameToEdit - 1] = frameString
+            // setSymbols(currentSymbolsList)
         }
     }
+
+    let initialFrameSymbol = symbols[frameToEdit - 1]
+    console.log("Initial frame symbol: " + initialFrameSymbol)
 
     return (
         <LinearGradient
@@ -114,6 +123,7 @@ export default function App() {
                 </TouchableOpacity>
                 <View style={styles.enterScoresView}>
                     <Scorecard
+                        // ['X', '9-', '8/', 'X', 'X', '9/', '7-', 'X', '9/', '6/9']
                         symbols={symbols}
                         scores={scores}
                     />
@@ -127,23 +137,28 @@ export default function App() {
                                 onChangeText={handleFrameInputChange}
                                 keyboardType="numeric"
                             >{frameToEdit}</TextInput>
+                            <View style={styles.frameReader}>
+                                {console.log(initialFrameSymbol)}
+                                <Text style={styles.frameReaderText}>{initialFrameSymbol}</Text>
+                            </View>
 
                         </View>
                     </View>
 
                     <Text style={styles.controlLabel}>Pins Knocked Down</Text>
                     <View style={styles.enterScoresControllerButtons}>
-                        <RoundButton onPress={handle0key} text="0" borderRadius={0} width={60} margin={5} shadowOpacity={0.4}></RoundButton>
-                        <RoundButton onPress={handle1key} text="1" borderRadius={0} width={60} margin={5} shadowOpacity={0.4}></RoundButton>
-                        <RoundButton onPress={handle2key} text="2" borderRadius={0} width={60} margin={5} shadowOpacity={0.4}></RoundButton>
-                        <RoundButton onPress={handle3key} text="3" borderRadius={0} width={60} margin={5} shadowOpacity={0.4}></RoundButton>
-                        <RoundButton onPress={handle4key} text="4" borderRadius={0} width={60} margin={5} shadowOpacity={0.4}></RoundButton>
-                        <RoundButton onPress={handle5key} text="5" borderRadius={0} width={60} margin={5} shadowOpacity={0.4}></RoundButton>
-                        <RoundButton onPress={handle6key} text="6" borderRadius={0} width={60} margin={5} shadowOpacity={0.4}></RoundButton>
-                        <RoundButton onPress={handle7key} text="7" borderRadius={0} width={60} margin={5} shadowOpacity={0.4}></RoundButton>
-                        <RoundButton onPress={handle8key} text="8" borderRadius={0} width={60} margin={5} shadowOpacity={0.4}></RoundButton>
-                        <RoundButton onPress={handle9key} text="9" borderRadius={0} width={60} margin={5} shadowOpacity={0.4}></RoundButton>
-                        <RoundButton onPress={handle10key} text="10" borderRadius={0} width={60} margin={5} shadowOpacity={0.4}></RoundButton>
+                        <RoundButton onPress={handle0key} text="0" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
+                        <RoundButton onPress={handle1key} text="1" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
+                        <RoundButton onPress={handle2key} text="2" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
+                        <RoundButton onPress={handle3key} text="3" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
+                        <RoundButton onPress={handle4key} text="4" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
+                        <RoundButton onPress={handle5key} text="5" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
+                        <RoundButton onPress={handle6key} text="6" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
+                        <RoundButton onPress={handle7key} text="7" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
+                        <RoundButton onPress={handle8key} text="8" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
+                        <RoundButton onPress={handle9key} text="9" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
+                        <RoundButton onPress={handle10key} text="10" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
+                        <RoundButton onPress={handleClear} text="Clear Frame" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
                     </View>
                 </View>
             </View>
@@ -181,6 +196,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     enterScoresController: {
+        marginBottom: 40,
         width: 360,
         height: 100,
         flexDirection:'row'
@@ -196,6 +212,21 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         alignSelf: 'center',
         textAlign: 'center',
+        fontSize: 20
+    },
+    frameReader: {
+        width:50,
+        height:50,
+        borderWidth: 1,
+        borderTopWidth: 0,
+        alignSelf: 'center',
+        textAlign: 'center',
+        fontSize: 20,
+
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    frameReaderText: {
         fontSize: 20
     },
     enterScoresControllerButtons: {
