@@ -11,11 +11,12 @@ import { auth } from '../firebaseConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import GameRecord from '../components/GameRecord';
 import Scorecard from '../components/Scorecard';
+import { FAILSAFE_SCHEMA } from 'js-yaml';
 
 
 export default function App() {
 
-    const [symbols, setSymbols] = useState(['', '', '', '', '', '', '', '', '', '4']);
+    const [symbols, setSymbols] = useState(['9/', '45', '6/', '6/', '8/', 'X', 'X', '8/', 'X', '8/-']);
     const [scores, setScores] = useState([]);
     const [frameInputBorderColor, setFrameInputBorderColor] = useState('black');
     const [frameToEdit, setFrameToEdit] = useState(1);
@@ -118,7 +119,7 @@ export default function App() {
         if (frameToEdit == 10) {
 
             if (tenthIsComplete(newSymbols[frameToEdit - 1])) {
-                
+
             } else if (newSymbols[frameToEdit - 1].length == 0) {
                 if (pins == 0) {
                     newSymbols[frameToEdit - 1] = "-"
@@ -307,7 +308,56 @@ export default function App() {
                 }
             }
         }
-        
+
+        if (scorecardComplete) {
+            handleScoresList()
+        }
+    }
+
+    const scorecardComplete = () => {
+        for (let i = 0; i < 9; i++) {
+            if (symbols[i].length == 2 || symbols[i] == "X") {
+                
+            } else {
+                return false
+            }
+        }
+
+        if (!tenthIsComplete(symbols[9])) {
+            return false
+        }
+
+        return true
+    }
+
+    const handleScoresList = () => {
+        // Convert the symbols to a list of numbers
+        let combinedSymbols = symbols.join()
+        combinedSymbols = combinedSymbols.replace(/,/g, "")
+
+        let rollsList = []
+        for (let i = 0; i < combinedSymbols.length; i++) {
+            if (combinedSymbols[i] == "X") {
+                rollsList.push(10)
+            } else if (combinedSymbols[i] == "-") {
+                rollsList.push(0)
+            } else if (combinedSymbols[i] == "/") {
+                rollsList.push(10 - rollsList[i-1])
+            } else {
+                rollsList.push(parseInt(combinedSymbols[i]))
+            }
+        }
+
+        console.log(rollsList)
+    }
+
+    const handleSubmit = () => {
+        if (!scorecardComplete()) {
+            console.log("Scorecard is not complete")
+        } else {
+            // Submit logic here. Use the symbols
+        }
+
 
     }
 
@@ -362,7 +412,10 @@ export default function App() {
                         <RoundButton onPress={handle10key} text="10" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
                         <RoundButton onPress={handleClear} text="Clear Frame" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
                     </View>
+
+                    <RoundButton color='9900fe' text="Submit Score" textColor='white' width={200} margin={5} ></RoundButton>
                 </View>
+
             </View>
 
         </LinearGradient>
