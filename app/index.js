@@ -9,6 +9,7 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../firebaseConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import GameRecord from '../components/GameRecord';
+import { getStringData, storeStringData } from '../async-functions';
 
 
 export default function App() {
@@ -33,6 +34,10 @@ export default function App() {
     //         router.push("/")
     //     }).catch(error => alert(error.message))
     // 
+
+    if (getStringData('gameNum') == null) {
+        storeStringData('gameNum', '0')
+    }
 
     return (
         <LinearGradient
