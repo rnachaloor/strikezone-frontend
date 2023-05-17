@@ -355,10 +355,20 @@ export default function App() {
         if (!scorecardComplete()) {
             console.log("Scorecard is not complete")
         } else {
-            // Submit logic here. Use the symbols
+            // An example of a storage object
+            /*
+                
+            {
+                deviceId: '2357237'
+                gameId: '523',
+                gameDate: '05-02-2023',
+                gameSymbols: ['9/', '45', '6/', '6/', '8/', 'X', 'X', '8/', 'X', '8/-']
+                gameScore: 189 (ignore this attribute for now)
+            }
+
+            */
+            const symbolsToStorage = symbols
         }
-
-
     }
 
     let initialFrameSymbol = symbols[frameToEdit - 1]
