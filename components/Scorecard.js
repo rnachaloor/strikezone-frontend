@@ -35,6 +35,13 @@ export default function Scorecard ({ symbols, scores }) {
         }
     })
 
+    const checkIfNaN = (item) => {
+        if (isNaN(item)) {
+            return ""
+        }
+        return item
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.frameHeader}>
@@ -73,7 +80,7 @@ export default function Scorecard ({ symbols, scores }) {
             ))}
 
             {scores.map((item, index) => (
-                <FrameLower key={index} score={item}/>
+                <FrameLower key={index} score={checkIfNaN(item)}/>
             ))}
         </View>
     )
