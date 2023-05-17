@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import GameRecord from '../components/GameRecord';
 import Scorecard from '../components/Scorecard';
 import { FAILSAFE_SCHEMA } from 'js-yaml';
+import { storeJSONData, getJSONData, getStringData } from "../async-functions";
 
 
 export default function App() {
