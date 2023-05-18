@@ -11,13 +11,16 @@ import { auth } from '../firebaseConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import GameRecord from '../components/GameRecord';
 import Scorecard from '../components/Scorecard';
+<<<<<<< HEAD
+=======
 import { FAILSAFE_SCHEMA } from 'js-yaml';
 import { storeJSONData, getJSONData, getStringData } from "../async-functions";
-import { Device } from "expo-device"
+import { Device } from "expo-device">>>>>>> cd18c09013046d3a1ec35cb64aea890979e971b1
+
 
 export default function App() {
 
-    const [symbols, setSymbols] = useState(['9/', '45', '6/', '6/', '8/', 'X', 'X', '8/', 'X', '8/-']);
+    const [symbols, setSymbols] = useState(['', '', '', '', '', '', '', '', '', '']);
     const [scores, setScores] = useState([]);
     const [frameInputBorderColor, setFrameInputBorderColor] = useState('black');
     const [frameToEdit, setFrameToEdit] = useState(1);
@@ -92,6 +95,7 @@ export default function App() {
         let newSymbols = [...symbols]
         newSymbols[frameToEdit - 1] = ""
         setSymbols(newSymbols)
+        handleScoresList()
     }
 
     // Handle when the frame number input is changed
@@ -188,7 +192,7 @@ export default function App() {
                 }
             } else if (newSymbols[frameToEdit - 1].length == 2) {
                 let lastTwoFrameValue = 0
-                if (newSymbols[frameToEdit - 1][0] == "X") {
+                if (newSymbols[frameToEdit - 1][0] == "X" && newSymbols[frameToEdit - 1][1] != "X") {
                     // The character could be a - which means 0 pins
                     if (newSymbols[frameToEdit - 1][1] == "-") {
                         lastTwoFrameValue = 0
@@ -227,6 +231,17 @@ export default function App() {
                     } else {
                         // Do nothing, because it adds to more than 10
                     }
+                } else if (newSymbols[frameToEdit - 1][0] == "X" && newSymbols[frameToEdit - 1][1] == "X") {
+                    if (pins == 0) {
+                        newSymbols[frameToEdit - 1] = newSymbols[frameToEdit - 1] + "-"
+                        setSymbols(newSymbols)
+                    } else if (pins == 10) {
+                        newSymbols[frameToEdit - 1] = newSymbols[frameToEdit - 1] + "X"
+                        setSymbols(newSymbols)
+                    } else {
+                        newSymbols[frameToEdit - 1] = newSymbols[frameToEdit - 1] + pins + ""
+                        setSymbols(newSymbols)
+                    }
                 } else {
                     if (pins == 0) {
                         newSymbols[frameToEdit - 1] = newSymbols[frameToEdit - 1] + "-"
@@ -237,7 +252,7 @@ export default function App() {
                     } else {
                         newSymbols[frameToEdit - 1] = newSymbols[frameToEdit - 1] + pins + ""
                         setSymbols(newSymbols)
-                    } 
+                    }
                 }     
             }
 
@@ -310,9 +325,8 @@ export default function App() {
             }
         }
 
-        if (scorecardComplete) {
-            handleScoresList()
-        }
+        let scoreList = handleScoresList()
+        setScores(scoreList)
     }
 
     const scorecardComplete = () => {
@@ -349,13 +363,47 @@ export default function App() {
             }
         }
 
-        console.log(rollsList)
+        let scoreList = []
+        let cumilativeScore = 0
+        let currentFrame = 0
+        let currentRoll = 0
+        while (scoreList.length <= 8) {
+            if (rollsList[currentRoll] == 10) { // It's a strike
+                cumilativeScore = cumilativeScore + 10
+                cumilativeScore = cumilativeScore + rollsList[currentRoll + 1] + rollsList[currentRoll + 2]
+                scoreList.push(cumilativeScore)
+                currentRoll++
+            } else {
+                cumilativeScore = cumilativeScore + rollsList[currentRoll]
+                currentRoll++
+                if (rollsList[currentRoll] + rollsList[currentRoll - 1] == 10) { // Its a spare
+                    cumilativeScore = cumilativeScore + rollsList[currentRoll]
+                    cumilativeScore = cumilativeScore + rollsList[currentRoll + 1]
+                    scoreList.push(cumilativeScore)
+                    currentRoll++
+                } else {
+                    cumilativeScore = cumilativeScore + rollsList[currentRoll]
+                    scoreList.push(cumilativeScore)
+                    currentRoll++
+                }
+            }
+        }
+
+        // 10th frame
+        for (let i = currentRoll; i < rollsList.length; i++) {
+            cumilativeScore = cumilativeScore + rollsList[i]
+        }
+        scoreList.push(cumilativeScore)
+
+        return scoreList
     }
 
     const handleSubmit = async () => {
+        handleScorecardChange()
         if (!scorecardComplete()) {
             console.log("Scorecard is not complete")
         } else {
+
             // An example of a storage object
             /*
                 
@@ -367,7 +415,13 @@ export default function App() {
             }
 
             */
-            const symbolsToStorage = symbols
+            const symbolsToStore = symbols
+            console.log("Calling Scores List function")
+            let scoresFromFunction = handleScoresList()
+            const gameScore = scoresFromFunction.slice(-1)
+
+            console.log(symbolsToStore)
+            console.log(gameScore)
             const deviceId = await Device.getDeviceIdAsync()
 
             //date code by chatgpt
@@ -455,7 +509,7 @@ export default function App() {
                         <RoundButton onPress={handleClear} text="Clear Frame" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
                     </View>
 
-                    <RoundButton color='9900fe' text="Submit Score" textColor='white' width={200} margin={5} ></RoundButton>
+                    <RoundButton onPress={handleSubmit} color='#9900fe' text="Submit Score" textColor='white' width={200} margin={5} ></RoundButton>
                 </View>
 
             </View>
