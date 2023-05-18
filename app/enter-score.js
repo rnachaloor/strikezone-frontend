@@ -11,8 +11,9 @@ import { auth } from '../firebaseConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import GameRecord from '../components/GameRecord';
 import Scorecard from '../components/Scorecard';
-
 import { storeJSONData, getJSONData, getStringData } from "../async-functions";
+import { Device } from "expo-device"
+
 
 
 export default function App() {
@@ -395,7 +396,7 @@ export default function App() {
         return scoreList
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         handleScorecardChange()
         if (!scorecardComplete()) {
             console.log("Scorecard is not complete")
@@ -419,6 +420,38 @@ export default function App() {
 
             console.log(symbolsToStore)
             console.log(gameScore)
+            const deviceId = await Device.getDeviceIdAsync()
+
+            //date code by chatgpt
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth() + 1; // Months are zero-based, so adding 1
+            const day = today.getDate();
+
+            // Format the date as desired (e.g., "YYYY-MM-DD")
+            const formattedDate = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
+
+            const gameData = {
+                deviceId: deviceId,
+                gameDate: formattedDate,
+                gameSymbols: symbolsToStorage,
+            }
+
+            /**
+             * [
+                {
+                    game 1 data
+                },
+                {
+                    game 2 data
+                }
+            ]
+             */
+
+            let oldData = await getJSONData('games')
+            oldData.push(gameData)
+            storeJSONData('games', oldData)
+
         }
     }
 
