@@ -7,7 +7,7 @@ import { Icon } from "react-native-elements";
 import * as MediaLibrary from 'expo-media-library'
 import RoundButton from '../components/RoundButton';
 import * as ImagePicker from 'expo-image-picker';
-
+import EnterScore from '../components/EnterScore';
 
 export default function App() {
     let cameraRef = useRef();
@@ -75,16 +75,17 @@ export default function App() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Camera style={{flex: 1}} type={type} ref={cameraRef}>
-                    <Text style={styles.backButton} onPress={() => router.push('/')}>{backToMenuText}</Text>
-                    <Text style={styles.enterScoreManually} onPress={() => router.push('/enter-score')}>{toManualScoresText}</Text>
-                    <View style={styles.scorecardRectangle}/>
-                    <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.button} onPress={handleTakePicture}>
-                            <View style={styles.circle}/>
-                        </TouchableOpacity>
-                    </View>
+            <Camera style={{flex: 1, opacity:1}} type={type} ref={cameraRef}>
+                <Text style={styles.backButton} onPress={() => router.push('/')}>{backToMenuText}</Text>
+                <Text style={styles.enterScoreManually} onPress={() => router.push('/enter-score')}>{toManualScoresText}</Text>
+                <View style={styles.scorecardRectangle}/>
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity style={styles.button} onPress={handleTakePicture}>
+                        <View style={styles.circle}/>
+                    </TouchableOpacity>
+                </View>
             </Camera>
+            <EnterScore opacity={1}></EnterScore>
         </SafeAreaView>
     )
 }

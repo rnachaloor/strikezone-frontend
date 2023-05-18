@@ -1,22 +1,14 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, SafeAreaView, View, Dimensions, Button, ScrollView, TouchableOpacity, TextInput } from 'react-native';
-import { useFonts, Montserrat_600SemiBold, Montserrat_400Regular, Montserrat_500Medium } from "@expo-google-fonts/montserrat";
+import { StyleSheet, TouchableOpacity, Text, View, Dimensions, TouchableHighlight } from 'react-native';
+import { useFonts, Montserrat_400Regular } from "@expo-google-fonts/montserrat";
 import { Lexend_400Regular, Lexend_500Medium } from '@expo-google-fonts/lexend';
-import { useState } from 'react';
-import { LinearGradient } from "expo-linear-gradient";
-import RoundButton from '../components/RoundButton';
+import { useState, useRef } from 'react';
 import { useRouter } from 'expo-router';
-import { signOut } from 'firebase/auth';
-import { auth } from '../firebaseConfig';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import GameRecord from '../components/GameRecord';
-import Scorecard from '../components/Scorecard';
 import { storeJSONData, getJSONData, getStringData } from "../async-functions";
 import { Device } from "expo-device"
-import EnterScore from '../components/EnterScore';
+import Scorecard from './Scorecard';
+import RoundButton from './RoundButton';
 
-export default function App() {
-
+export default function EnterScore ({ opacity=1 }) {
     const [symbols, setSymbols] = useState(['', '', '', '', '', '', '', '', '', '']);
     const [scores, setScores] = useState([]);
     const [frameInputBorderColor, setFrameInputBorderColor] = useState('black');
@@ -454,156 +446,143 @@ export default function App() {
         }
     }
 
+    const { width } = Dimensions.get('window');
+
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            backgroundColor: '#fff',
+            alignItems: 'center',
+        },
+        backButton: {
+            paddingLeft: 10,
+            marginBottom: 5,
+            color: 'black'
+        },
+        titleText: {
+            marginTop: 20,
+            fontFamily: 'Lexend_400Regular', 
+            fontSize: 30,
+            padding: 10,
+            color: 'black',
+        },
+        enterScoresContainer: {
+            position:'absolute',
+            alignSelf: 'center',
+            marginBottom: 100,
+            opacity: opacity,
+        },
+        enterScoresView: {
+            marginTop: 10,
+            backgroundColor: 'white',
+            width: width * 0.9,
+            borderRadius: 10,
+            alignItems: 'center',
+        },
+        enterScoresController: {
+            width: 360,
+            marginBottom: 20,
+            flexDirection:'column',
+            alignItems: 'center',
+            justifyContent: 'center'
+        },
+        enterScoresControllerLeft: {
+            width: 360,
+            flexDirection:'row',
+            alignItems: 'center',
+            justifyContent: 'center'
+        },
+        frameInput: {
+            marginTop: 5,
+            width:50,
+            height:50,
+            borderWidth: 1,
+            alignSelf: 'center',
+            textAlign: 'center',
+            justifyContent: 'center',
+            alignItems: 'center'
+        },
+        frameReaderContainer: {
+            marginBottom: 20
+        },
+        frameReader: {
+            width:50,
+            height:50,
+            alignSelf: 'center',
+            textAlign: 'center',
+            fontSize: 20,
+    
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+        frameReaderText: {
+            fontSize: 20
+        },
+        enterScoresControllerButtons: {
+            width: 360,
+            marginTop: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection:'row',
+            flexWrap: 'wrap',
+        },
+        controlLabel: {
+            color: 'gray',
+            fontFamily:'Lexend_400Regular',
+            alignSelf: 'center'
+        }
+    })
+
     let initialFrameSymbol = symbols[frameToEdit - 1]
     let leftArrow = "<"
     let rightArrow = ">"
 
-    // return (
-    //     <LinearGradient
-    //         colors={['#3c79d7', '#c27b9f']}
-    //         start={{x: 0, y: 0}}
-    //         end={{x: 0, y: 1.5}}
-    //         style={styles.container}>
-
-    //         <View style={styles.enterScoresContainer}>
-    //             <Text style={styles.titleText}>Enter a Score</Text>
-    //             <TouchableOpacity>
-    //                 <Text style={styles.backButton} onPress={() => router.push('/capture')}>{backToMenuText}</Text>
-    //             </TouchableOpacity>
-    //             <View style={styles.enterScoresView}>
-    //                 <Scorecard
-    //                     // ['X', '9-', '8/', 'X', 'X', '9/', '7-', 'X', '9/', '6/9']
-    //                     symbols={symbols}
-    //                     scores={scores}
-    //                 />
-
-    //                 <View style={styles.enterScoresController}>
-    //                     <Text style={styles.controlLabel}>Frame to Edit</Text>
-    //                     <View style={styles.enterScoresControllerLeft}>
-
-    //                         <RoundButton onPress={handleLeftArrow} text="<" borderRadius={0} width={50} marginTop={10} shadowOpacity={0.0}></RoundButton>
-    //                         <View style={styles.frameInput}>
-    //                             <Text style={styles.frameReaderText}>{frameToEdit}</Text>
-    //                         </View>
-    //                         <RoundButton onPress={handleRightArrow} text=">" borderRadius={0} width={50} marginTop={10} shadowOpacity={0.0}></RoundButton>
-
-    //                     </View>
-    //                 </View>
-
-    //                 <Text style={styles.controlLabel}>Pins Knocked Down</Text>
-    //                 <View style={styles.enterScoresControllerButtons}>
-    //                     <RoundButton onPress={handle0key} text="0" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
-    //                     <RoundButton onPress={handle1key} text="1" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
-    //                     <RoundButton onPress={handle2key} text="2" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
-    //                     <RoundButton onPress={handle3key} text="3" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
-    //                     <RoundButton onPress={handle4key} text="4" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
-    //                     <RoundButton onPress={handle5key} text="5" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
-    //                     <RoundButton onPress={handle6key} text="6" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
-    //                     <RoundButton onPress={handle7key} text="7" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
-    //                     <RoundButton onPress={handle8key} text="8" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
-    //                     <RoundButton onPress={handle9key} text="9" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
-    //                     <RoundButton onPress={handle10key} text="10" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
-    //                     <RoundButton onPress={handleClear} text="Clear Frame" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
-    //                 </View>
-
-    //                 <RoundButton onPress={handleSubmit} color='#9900fe' text="Submit Score" textColor='white' width={200} margin={5} ></RoundButton>
-    //             </View>
-
-    //         </View>
-
-    //     </LinearGradient>
-    // )
     return (
-        <LinearGradient
-            colors={['#3c79d7', '#c27b9f']}
-            start={{x: 0, y: 0}}
-            end={{x: 0, y: 1.5}}
-            style={styles.container}>
+        
+        <View style={styles.enterScoresContainer}>
+            <View style={styles.enterScoresView}>
+                <Text style={styles.titleText}>Enter a Score</Text>
+                <TouchableOpacity>
+                    <Text style={styles.backButton} onPress={() => router.push('/capture')}>{backToMenuText}</Text>
+                </TouchableOpacity>
+                <Scorecard
+                    // ['X', '9-', '8/', 'X', 'X', '9/', '7-', 'X', '9/', '6/9']
+                    symbols={symbols}
+                    scores={scores}
+                />
 
-            <EnterScore/>
-        </LinearGradient>
+                <View style={styles.enterScoresController}>
+                    <Text style={styles.controlLabel}>Frame to Edit</Text>
+                    <View style={styles.enterScoresControllerLeft}>
+
+                        <RoundButton onPress={handleLeftArrow} text="<" borderRadius={0} width={50} marginTop={10} shadowOpacity={0.0}></RoundButton>
+                        <View style={styles.frameInput}>
+                            <Text style={styles.frameReaderText}>{frameToEdit}</Text>
+                        </View>
+                        <RoundButton onPress={handleRightArrow} text=">" borderRadius={0} width={50} marginTop={10} shadowOpacity={0.0}></RoundButton>
+
+                    </View>
+                </View>
+
+                <Text style={styles.controlLabel}>Pins Knocked Down</Text>
+                <View style={styles.enterScoresControllerButtons}>
+                    <RoundButton onPress={handle0key} text="0" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
+                    <RoundButton onPress={handle1key} text="1" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
+                    <RoundButton onPress={handle2key} text="2" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
+                    <RoundButton onPress={handle3key} text="3" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
+                    <RoundButton onPress={handle4key} text="4" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
+                    <RoundButton onPress={handle5key} text="5" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
+                    <RoundButton onPress={handle6key} text="6" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
+                    <RoundButton onPress={handle7key} text="7" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
+                    <RoundButton onPress={handle8key} text="8" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
+                    <RoundButton onPress={handle9key} text="9" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
+                    <RoundButton onPress={handle10key} text="10" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
+                    <RoundButton onPress={handleClear} text="Clear Frame" borderRadius={0} width={100} margin={5} shadowOpacity={0.4}></RoundButton>
+                </View>
+
+                <RoundButton onPress={handleSubmit} color='#9900fe' text="Submit Score" textColor='white' width={200} margin={5} ></RoundButton>
+            </View>
+
+        </View>
     )
-
 }
-
-const { width } = Dimensions.get('window');
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-    },
-    backButton: {
-        paddingLeft: 10,
-        marginBottom: 5,
-        color: 'white'
-    },
-    titleText: {
-        marginTop:100,
-        fontFamily: 'Lexend_400Regular', 
-        fontSize: 30,
-        padding: 10,
-        color: 'white',
-    },
-    enterScoresContainer: {
-    },
-    enterScoresView: {
-        backgroundColor: 'white',
-        width: width * 0.9,
-        borderRadius: 10,
-        alignItems: 'center',
-    },
-    enterScoresController: {
-        width: 360,
-        marginBottom: 20,
-        flexDirection:'column',
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    enterScoresControllerLeft: {
-        width: 360,
-        flexDirection:'row',
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    frameInput: {
-        marginTop: 5,
-        width:50,
-        height:50,
-        borderWidth: 1,
-        alignSelf: 'center',
-        textAlign: 'center',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    frameReaderContainer: {
-        marginBottom: 20
-    },
-    frameReader: {
-        width:50,
-        height:50,
-        alignSelf: 'center',
-        textAlign: 'center',
-        fontSize: 20,
-
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    frameReaderText: {
-        fontSize: 20
-    },
-    enterScoresControllerButtons: {
-        width: 360,
-        marginTop: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection:'row',
-        flexWrap: 'wrap',
-    },
-    controlLabel: {
-        color: 'gray',
-        fontFamily:'Lexend_400Regular',
-        alignSelf: 'center'
-    }
-})
