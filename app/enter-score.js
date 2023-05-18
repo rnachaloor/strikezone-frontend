@@ -13,7 +13,7 @@ import GameRecord from '../components/GameRecord';
 import Scorecard from '../components/Scorecard';
 import { FAILSAFE_SCHEMA } from 'js-yaml';
 import { storeJSONData, getJSONData, getStringData } from "../async-functions";
-
+import { Device } from "expo-device"
 
 export default function App() {
 
@@ -352,7 +352,7 @@ export default function App() {
         console.log(rollsList)
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!scorecardComplete()) {
             console.log("Scorecard is not complete")
         } else {
@@ -360,8 +360,7 @@ export default function App() {
             /*
                 
             {
-                deviceId: '2357237'
-                gameId: '523',
+                deviceId: '2357237',
                 gameDate: '05-02-2023',
                 gameSymbols: ['9/', '45', '6/', '6/', '8/', 'X', 'X', '8/', 'X', '8/-']
                 gameScore: 189 (ignore this attribute for now)
@@ -369,6 +368,38 @@ export default function App() {
 
             */
             const symbolsToStorage = symbols
+            const deviceId = await Device.getDeviceIdAsync()
+
+            //date code by chatgpt
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth() + 1; // Months are zero-based, so adding 1
+            const day = today.getDate();
+
+            // Format the date as desired (e.g., "YYYY-MM-DD")
+            const formattedDate = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
+
+            const gameData = {
+                deviceId: deviceId,
+                gameDate: formattedDate,
+                gameSymbols: symbolsToStorage,
+            }
+
+            /**
+             * [
+                {
+                    game 1 data
+                },
+                {
+                    game 2 data
+                }
+            ]
+             */
+
+            let oldData = await getJSONData('games')
+            oldData.push(gameData)
+            storeJSONData('games', oldData)
+
         }
     }
 

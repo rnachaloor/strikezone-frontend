@@ -9,7 +9,7 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../firebaseConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import GameRecord from '../components/GameRecord';
-import { getStringData, storeStringData } from '../async-functions';
+import { getStringData, storeJSONData, storeStringData } from '../async-functions';
 
 
 export default function App() {
@@ -35,8 +35,8 @@ export default function App() {
     //     }).catch(error => alert(error.message))
     // 
 
-    if (getStringData('gameNum') == null) {
-        storeStringData('gameNum', '0')
+    if (getStringData('games') == null) {
+        storeJSONData('games', [])
     }
 
     return (
