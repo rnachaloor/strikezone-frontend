@@ -1,19 +1,26 @@
 import { StyleSheet, TouchableOpacity, Text, View, Dimensions, TouchableHighlight } from 'react-native';
 import { useFonts, Montserrat_400Regular } from "@expo-google-fonts/montserrat";
 import { Lexend_400Regular, Lexend_500Medium } from '@expo-google-fonts/lexend';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { storeJSONData, getJSONData, getStringData } from "../async-functions";
 import { Device } from "expo-device"
 import Scorecard from './Scorecard';
 import RoundButton from './RoundButton';
 
-export default function EnterScore ({ opacity=1 }) {
-    const [symbols, setSymbols] = useState(['', '', '', '', '', '', '', '', '', '']);
-    const [scores, setScores] = useState([]);
-    const [frameInputBorderColor, setFrameInputBorderColor] = useState('black');
+export default function EnterScore ({ opacity=1, display='block', passedSymbols, passedScores=[]}) {
+    console.log("We are in EnterScore.js and we have been passedSymbols which is")
+    const [symbols, setSymbols] = useState(passedSymbols);
+
+    console.log("We are in EnterScore.js and have set the state for symbols, which is now")
+    console.log(symbols)
+    const [scores, setScores] = useState(passedScores);
     const [frameToEdit, setFrameToEdit] = useState(1);
     const [frameSymbol, setFrameSymbol] = useState(symbols[frameToEdit - 1]);
+
+    useEffect(() => {
+        setSymbols(passedSymbols)
+    }, [passedSymbols])
 
     let [fontsLoaded] = useFonts({
         Montserrat_400Regular,
@@ -449,11 +456,6 @@ export default function EnterScore ({ opacity=1 }) {
     const { width } = Dimensions.get('window');
 
     const styles = StyleSheet.create({
-        container: {
-            flex: 1,
-            backgroundColor: '#fff',
-            alignItems: 'center',
-        },
         backButton: {
             paddingLeft: 10,
             marginBottom: 5,
@@ -467,6 +469,7 @@ export default function EnterScore ({ opacity=1 }) {
             color: 'black',
         },
         enterScoresContainer: {
+            display: display,
             position:'absolute',
             alignSelf: 'center',
             marginBottom: 100,
@@ -533,6 +536,10 @@ export default function EnterScore ({ opacity=1 }) {
         }
     })
 
+    const getSymbols = () => {
+        return symbols
+    }
+
     let initialFrameSymbol = symbols[frameToEdit - 1]
     let leftArrow = "<"
     let rightArrow = ">"
@@ -543,12 +550,17 @@ export default function EnterScore ({ opacity=1 }) {
             <View style={styles.enterScoresView}>
                 <Text style={styles.titleText}>Enter a Score</Text>
                 <TouchableOpacity>
-                    <Text style={styles.backButton} onPress={() => router.push('/capture')}>{backToMenuText}</Text>
+                    <Text style={styles.backButton} onPress={() => {
+                        router.push('/')
+                        router.push('/capture')
+                        }}>{backToMenuText}</Text>
                 </TouchableOpacity>
+                {console.log("We are in EnterScore.js. Scorecard symbols is")}
+                {console.log(passedSymbols)}
                 <Scorecard
                     // ['X', '9-', '8/', 'X', 'X', '9/', '7-', 'X', '9/', '6/9']
-                    symbols={symbols}
-                    scores={scores}
+                    scorecardSymbols={passedSymbols}
+                    scorecardScores={scores}
                 />
 
                 <View style={styles.enterScoresController}>

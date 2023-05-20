@@ -15,6 +15,9 @@ export default function App() {
     const [capturedImage, setCapturedImage] = useState(null);
     const [permission, requestPermission] = Camera.useCameraPermissions();
 
+    const [symbols, setSymbols]= useState(['', '', '', '', '', '', '', '', '', ''])
+    const [enterScoreState, setEnterScoreState] = useState(false)
+
     let camera = null;
 
     const router = useRouter()
@@ -39,10 +42,11 @@ export default function App() {
             exif: false
         };
 
-        let newPhoto = await cameraRef.current.takePictureAsync(options);
-        console.log(newPhoto['uri'])
-        sendPhoto(newPhoto)
-        setCapturedImage(newPhoto['uri'])
+        if (enterScoreState == false) {
+            let newPhoto = await cameraRef.current.takePictureAsync(options);
+            sendPhoto(newPhoto)
+            setCapturedImage(newPhoto['uri'])
+        }
     }
 
     /**
@@ -57,17 +61,38 @@ export default function App() {
         });
     
         try {
-          const response = await fetch('http://192.168.1.212:8080/captures/post-image', {
+          const response = await fetch('http://172.20.10.2:8080/captures/post-image', {
             method: 'POST',
             body: formData
           });
-          console.log(response)
           const responseData = await response.json();
-          console.log(responseData);
+
+          setEnterScoreState(true)
+          setSymbols(responseData)
         } catch (error) {
           console.error(error);
         }
       };
+
+    const handleCameraOpacity = () =>{
+        if (enterScoreState) {
+            return 0.5
+        } else {
+            return 1
+        }
+    }
+
+    const handleEnterScoreComponent = () => {
+        if (enterScoreState) {
+            return 'block'
+        } else {
+            return 'none'
+        }
+    }
+
+    const handleSymbols = () => {
+        return symbols
+    }
 
     // React freaks out when the '<' symbol is inside an element, so this is to make sure that doesn't happen
     let backToMenuText = "< Main Menu"
@@ -75,17 +100,21 @@ export default function App() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Camera style={{flex: 1, opacity:1}} type={type} ref={cameraRef}>
-                <Text style={styles.backButton} onPress={() => router.push('/')}>{backToMenuText}</Text>
-                <Text style={styles.enterScoreManually} onPress={() => router.push('/enter-score')}>{toManualScoresText}</Text>
-                <View style={styles.scorecardRectangle}/>
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.button} onPress={handleTakePicture}>
-                        <View style={styles.circle}/>
-                    </TouchableOpacity>
-                </View>
+            <Camera style={{flex: 1, opacity: handleCameraOpacity() }} type={type} ref={cameraRef}>
+            <Text style={styles.backButton} onPress={() => router.push('/')}>{backToMenuText}</Text>
+            <Text style={styles.enterScoreManually} onPress={() => {
+                enterEnterMode()
+                }}>{toManualScoresText}</Text>
+            <View style={styles.scorecardRectangle}/>
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.button} onPress={handleTakePicture}>
+                    <View style={styles.circle}/>
+                </TouchableOpacity>
+            </View>
             </Camera>
-            <EnterScore opacity={1}></EnterScore>
+            {console.log("We are in capture.js, symbols is")}
+            {console.log(handleSymbols())}
+            <EnterScore display={handleEnterScoreComponent()} passedSymbols={handleSymbols()}></EnterScore>
         </SafeAreaView>
     )
 }

@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import FrameUpper from '../components/FrameUpper';
 import FrameLower from '../components/FrameLower';
 
-export default function Scorecard ({ symbols, scores }) {
+export default function Scorecard ({ scorecardSymbols, scorecardScores }) {
 
     let [fontsLoaded] = useFonts({
         Montserrat_400Regular,
@@ -42,6 +42,12 @@ export default function Scorecard ({ symbols, scores }) {
         return item
     }
 
+    const getSymbols = () => {
+        console.log("We are in Scorecard.js, symbols is")
+        console.log(scorecardSymbols)
+        return scorecardSymbols
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.frameHeader}>
@@ -75,11 +81,11 @@ export default function Scorecard ({ symbols, scores }) {
                 <Text style={{  alignSelf: 'center' }}>10</Text>
             </View>
 
-            {symbols.map((item, index) => (
+            {scorecardSymbols.map((item, index) => (
                 <FrameUpper key={index} symbol={item}/>
             ))}
 
-            {scores.map((item, index) => (
+            {scorecardScores.map((item, index) => (
                 <FrameLower key={index} score={checkIfNaN(item)}/>
             ))}
         </View>
