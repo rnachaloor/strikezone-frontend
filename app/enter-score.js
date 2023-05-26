@@ -11,7 +11,7 @@ import { auth } from '../firebaseConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import GameRecord from '../components/GameRecord';
 import Scorecard from '../components/Scorecard';
-import { storeJSONData, getJSONData, getStringData } from "../async-functions";
+import { storeJSONData, getJSONData, getStringData, storeStringData } from "../async-functions";
 import { Device } from "expo-device"
 import EnterScore from '../components/EnterScore';
 
@@ -430,7 +430,16 @@ export default function App() {
             // Format the date as desired (e.g., "YYYY-MM-DD")
             const formattedDate = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
 
+            let id = Number.parseInt(await getStringData('gamesId'))
+            if (id === null) {
+                storeStringData('gamesId', '0')
+                id = 0
+            } else {
+                id++;
+            }
+
             const gameData = {
+                id: id,
                 deviceId: deviceId,
                 gameDate: formattedDate,
                 gameSymbols: symbolsToStorage,
@@ -446,11 +455,11 @@ export default function App() {
                 }
             ]
              */
-
+            
             let oldData = await getJSONData('games')
             oldData.push(gameData)
             storeJSONData('games', oldData)
-
+            storeJSONData('gamesId', id.toString())
         }
     }
 
