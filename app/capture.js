@@ -1,12 +1,8 @@
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import { Camera, CameraType } from "expo-camera";
-import { shareAsync } from 'expo-sharing'
 import { useState, useRef } from 'react';
 import { useRouter } from 'expo-router';
-import { Icon } from "react-native-elements";
-import * as MediaLibrary from 'expo-media-library'
 import RoundButton from '../components/RoundButton';
-import * as ImagePicker from 'expo-image-picker';
 import EnterScore from '../components/EnterScore';
 
 export default function App() {
@@ -32,47 +28,117 @@ export default function App() {
                 <Text>You have not given us permission to access the camera.</Text>
                 <RoundButton onPress={requestPermission} text="Give us Permission"/>
             </View>
+
+            // <LinearGradient
+            // colors={['#3c79d7', '#c27b9f']}
+            // start={{x: 0, y: 0}}
+            // end={{x: 0, y: 1.5}}
+            // style={styles.container}>
+
+            //     <View style={styles.container}>
+            //             <Text>You have not given us permission to access the camera.</Text>
+            //             <RoundButton onPress={requestPermission} text="Give us Permission"/>
+            //     </View>
+
+            // </LinearGradient>
         )
     }
 
     const handleTakePicture = async () => {
         let options = {
-            quality: 1,
+            quality: 0.5,
             base64: true,
-            exif: false
+            exif: false,
+            format: 'png'
         };
 
         if (enterScoreState == false) {
             let newPhoto = await cameraRef.current.takePictureAsync(options);
-            sendPhoto(newPhoto)
+            
+            // RNImageConverter.getPNG(newPhoto, (convertedPhoto) => {
+            //     console.log(convertedPhoto);
+            //     //4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsND...
+            // });
+
+            // console.log("GOT HERE 3")
+            console.log(Object.keys(newPhoto))
+            uploadImage(newPhoto['uri'])
             setCapturedImage(newPhoto['uri'])
         }
     }
 
+    const cropImage = async (imageUri) => {
+        ImageCropPicker.openCropper({
+            path: imageUri,
+            width: 200,
+            height: 200
+        })
+            .then(image => {
+                return image
+            })
+    }
+
+    // const uploadImageTest = async () => {
+    //     const apiUrl = "https://8l5amkvz24.execute-api.us-east-1.amazonaws.com/strikezone-image-uploader";
+    //     const fileName = "scorecard1.png";
+    //     const fileUri = require("./assets/scorecard1.png"); // Assuming the image file is in the same directory
+      
+    //     const formData = new FormData();
+    //     formData.append("image", {
+    //       uri: fileUri,
+    //       name: fileName,
+    //       type: "image/png",
+    //     });
+      
+    //     try {
+    //       const response = await fetch(apiUrl, {
+    //         method: "POST",
+    //         body: formData,
+    //       });
+      
+    //       if (response.ok) {
+    //         console.log("Image uploaded successfully!");
+    //         // Handle the response or perform any additional actions
+    //       } else {
+    //         console.error("Image upload failed!");
+    //         // Handle the error
+    //       }
+    //     } catch (error) {
+    //       console.error("An error occurred during image upload:", error);
+    //       // Handle the error
+    //     }
+    //   };
+
     /**
      * Function written by ChatGPT to send the photo to the backend
      */
-    const sendPhoto = async (photo) => {
-        const formData = new FormData();
-        formData.append('file', {
-          uri: photo.uri,
-          type: 'image/jpeg',
-          name: 'photo.jpg'
-        });
-    
-        try {
-          const response = await fetch('http://172.20.10.2:8080/captures/post-image', {
-            method: 'POST',
-            body: formData
-          });
-          const responseData = await response.json();
+    const uploadImage = async (imageUri) => {
+        const url = 'https://8l5amkvz24.execute-api.us-east-1.amazonaws.com/strikezone-image-uploader';
+        const response = await fetch(imageUri)
+        const imgBlob = await response.blob()
 
-          setEnterScoreState(true)
-          setSymbols(responseData)
+        try {
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/octet-stream'
+                }, 
+                body: imgBlob
+            })
+
+            if (response.status === 200) {
+                const result = await response.text();
+                console.log(result);
+            } else {
+                console.log('Error uploading image. Status code:', response.status);
+                console.log(response)
+            }
         } catch (error) {
-          console.error(error);
+            console.log('Error reading file:', error);
         }
-      };
+    };
+
 
     const handleCameraOpacity = () =>{
         if (enterScoreState) {
@@ -100,13 +166,13 @@ export default function App() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Camera style={{flex: 1, opacity: handleCameraOpacity() }} type={type} ref={cameraRef}>
+            <Camera style={{flex: 1, opacity: handleCameraOpacity() }} zoom={0.1} type={type} ref={cameraRef}>
             <Text style={styles.backButton} onPress={() => router.push('/')}>{backToMenuText}</Text>
             <Text style={styles.enterScoreManually} onPress={() => {
                 enterEnterMode()
                 }}>{toManualScoresText}</Text>
             <View style={styles.scorecardRectangle}/>
-            <View style={styles.buttonContainer}>
+            <View style={styles.buttdonContainer}>
                 <TouchableOpacity style={styles.button} onPress={handleTakePicture}>
                     <View style={styles.circle}/>
                 </TouchableOpacity>
