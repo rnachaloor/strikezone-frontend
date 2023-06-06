@@ -1,9 +1,10 @@
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
 import { Camera, CameraType } from "expo-camera";
 import { useState, useRef } from 'react';
 import { useRouter } from 'expo-router';
 import RoundButton from '../components/RoundButton';
 import EnterScore from '../components/EnterScore';
+import * as ImageManipulator from 'expo-image-manipulator';
 
 export default function App() {
     let cameraRef = useRef();
@@ -61,21 +62,35 @@ export default function App() {
             // });
 
             // console.log("GOT HERE 3")
+
+            
+
             console.log(Object.keys(newPhoto))
-            uploadImage(newPhoto['uri'])
-            setCapturedImage(newPhoto['uri'])
+            let imageUri = await cropImage(newPhoto['uri']);
+            // uploadImage(imageUri['uri']);
+            console.log(imageUri)
+            setCapturedImage(imageUri);
+
+            // uploadImage(newPhoto['uri'])
+            // setCapturedImage(newPhoto['uri'])
         }
     }
 
     const cropImage = async (imageUri) => {
-        ImageCropPicker.openCropper({
-            path: imageUri,
-            width: 200,
-            height: 200
-        })
-            .then(image => {
-                return image
-            })
+        const cropOptions = {
+            originX: 30,
+            originY: 2010,
+            width: 390,
+            height: 70
+        }
+
+        const croppedImage = await ImageManipulator.manipulateAsync(
+            imageUri,
+            [{crop: cropOptions}],
+            { compress: 1, format: ImageManipulator.SaveFormat.JPEG }
+        )
+
+        return croppedImage.uri;
     }
 
     // const uploadImageTest = async () => {
@@ -177,6 +192,7 @@ export default function App() {
                     <View style={styles.circle}/>
                 </TouchableOpacity>
             </View>
+            <Image source={{uri: capturedImage}} style={{width: 390, height: 70}}></Image>
             </Camera>
             {console.log("We are in capture.js, symbols is")}
             {console.log(handleSymbols())}
